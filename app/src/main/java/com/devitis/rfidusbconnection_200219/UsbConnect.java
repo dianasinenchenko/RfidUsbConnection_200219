@@ -31,7 +31,7 @@ public class UsbConnect extends Application {
     private static UsbEndpoint usbEndpointOut;
     private static UsbEndpoint usbEndpointIn;
 
-//    0:Gen2, 1:Gen2+RSSI, 2:ISO6B
+    //    0:Gen2, 1:Gen2+RSSI, 2:ISO6B
     public static int tagMode;
     public static boolean stop;
     private static Thread thread;
@@ -112,10 +112,13 @@ public class UsbConnect extends Application {
         return thread;
     }
 
-    private void stopThread() {
+    private synchronized void stopThread() {
         stop = true;
         try {
-            thread.stop();
+            if (thread != null) {
+                thread = null;
+            }
+            //thread.stop();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -188,7 +191,7 @@ public class UsbConnect extends Application {
                     connection.close();
                 }
             } else {
-                Log.e(TAG, "open falied");
+                Log.e(TAG, "open failed");
             }
         } else {
             clearBuffer();
